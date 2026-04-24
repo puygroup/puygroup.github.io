@@ -1,0 +1,99 @@
+name: Build & Deploy Status Page
+
+on:
+  schedule:
+    - cron: '0 * * * *'   # runs every hour
+  push:
+    branches: [main]       # also runs on every push to main
+  workflow_dispatch:        # allows manual trigger from GitHub UI
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write       # needed to push the built HTML to gh-pages
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Fetch commits from Proteccion repo
+        env:
+          GH_TOKEN: ${{ secrets.STATUS_PAGE_TOKEN }}
+        run: |
+          python3 << 'PYEOF'
+          import json, urllib.request, urllib.parse, os, sys
+
+          token  = os.environ["GH_TOKEN"]
+          org    = "puygroup"
+          repo   = "Proteccion"
+
+          BRANCHES = [
+            ("deployment/colfondos-front",           "colfondos",   "Colfondos"),
+            ("deployment/demo-obligatorio-skandia",  "obligatorio", "Obligatorio / Skandia"),
+            ("deployment/prod-derivados-skandia",    "skandia",     "Skandia Prod"),
+          ]
+
+          commits = []
+          for branch_ref, key, label in BRANCHES:
+            encoded = urllib.parse.quote(branch_ref, safe="")
+            url = f"https://api.github.com/repos/{org}/{repo}/commits?sha={encoded}&per_page=10"
+            req = urllib.request.Request(url, headers={
+              "Authorization": f"Bearer {token}",
+              "Accept": "application/vnd.github+json",
+              "X-GitHub-Api-Version": "2022-11-28",
+              "User-Agent": "puy-status-page",
+            })
+            try:
+              with urllib.request.urlopen(req) as resp:
+                data = json.loads(resp.read())
+              for c in data:
+                commits.append({
+                  "sha":     c["sha"][:7],
+                  "url":     c["html_url"],
+                  "message": c["commit"]["message"].split("\n")[0],
+                  "author":  c["commit"]["author"]["name"],
+                  "date":    c["commit"]["author"]["date"],
+                  "branch":  key,
+                  "label":   label,
+                })
+              print(f"Fetched {len(data)} commits from {branch_ref}")
+            except Exception as e:
+              print(f"Warning: could not fetch {branch_ref}: {e}", file=sys.stderr)
+
+          commits.sort(key=lambda x: x["date"], reverse=True)
+          top10 = commits[:10]
+
+          with open("commits.json", "w") as f:
+            json.dump(top10, f, indent=2)
+
+          print(f"Total: {len(top10)} commits written to commits.json")
+          PYEOF
+
+      - name: Inject commits into HTML
+        run: |
+          python3 << 'PYEOF'
+          import json
+
+          with open("commits.json") as f:
+            commits = json.load(f)
+
+          with open("index.html") as f:
+            html = f.read()
+
+          injection = "window.COMMITS = " + json.dumps(commits, ensure_ascii=False) + ";"
+          html = html.replace("/* __COMMITS_PLACEHOLDER__ */", injection)
+
+          with open("index.html", "w") as f:
+            f.write(html)
+
+          print(f"Injected {len(commits)} commits into index.html")
+          PYEOF
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./
+          publish_branch: gh-pages
+          exclude_assets: '.github,commits.json'
