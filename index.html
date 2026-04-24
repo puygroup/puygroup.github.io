@@ -9,521 +9,134 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --bg: #0a0d12;
-      --surface: #111620;
-      --surface2: #171e2b;
-      --border: #1e2a3a;
-      --border2: #243044;
-      --text: #e8edf5;
-      --text-muted: #6b7e99;
-      --text-dim: #3d5070;
-      --green: #00d68f;
-      --green-dim: rgba(0,214,143,0.08);
-      --green-glow: rgba(0,214,143,0.15);
-      --yellow: #f5c842;
-      --yellow-dim: rgba(245,200,66,0.08);
-      --red: #ff4d6a;
-      --red-dim: rgba(255,77,106,0.08);
-      --blue: #3d9bff;
-      --blue-dim: rgba(61,155,255,0.06);
-      --accent: #00d68f;
+      --bg:#0a0d12; --surface:#111620; --surface2:#171e2b;
+      --border:#1e2a3a; --border2:#243044;
+      --text:#e8edf5; --text-muted:#6b7e99; --text-dim:#3d5070;
+      --green:#00d68f; --green-dim:rgba(0,214,143,0.08);
+      --yellow:#f5c842; --yellow-dim:rgba(245,200,66,0.08);
+      --red:#ff4d6a; --red-dim:rgba(255,77,106,0.08);
+      --blue:#3d9bff; --blue-dim:rgba(61,155,255,0.06);
     }
-
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 300;
-      min-height: 100vh;
-      overflow-x: hidden;
-    }
-
-    /* Grid background */
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background-image:
-        linear-gradient(rgba(61,155,255,0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(61,155,255,0.03) 1px, transparent 1px);
-      background-size: 40px 40px;
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    .wrap {
-      position: relative;
-      z-index: 1;
-      max-width: 780px;
-      margin: 0 auto;
-      padding: 0 24px;
-    }
-
-    /* ── HEADER ── */
-    header {
-      padding: 48px 0 0;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .logo-mark {
-      width: 32px;
-      height: 32px;
-      background: var(--green);
-      border-radius: 6px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .logo-mark svg { width: 18px; height: 18px; }
-
-    .logo-name {
-      font-family: 'Syne', sans-serif;
-      font-weight: 800;
-      font-size: 20px;
-      letter-spacing: 0.04em;
-      color: var(--text);
-    }
-
-    .logo-sub {
-      font-family: 'DM Mono', monospace;
-      font-size: 11px;
-      color: var(--text-muted);
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-    }
-
-    .last-updated {
-      font-family: 'DM Mono', monospace;
-      font-size: 11px;
-      color: var(--text-dim);
-      letter-spacing: 0.06em;
-    }
-
-    /* ── HERO STATUS ── */
-    .hero {
-      margin: 56px 0 48px;
-      padding: 40px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .hero::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 2px;
-      background: linear-gradient(90deg, transparent, var(--green), transparent);
-      opacity: 0.6;
-    }
-
-    .hero-glow {
-      position: absolute;
-      top: -60px; left: 50%;
-      transform: translateX(-50%);
-      width: 300px; height: 120px;
-      background: radial-gradient(ellipse, rgba(0,214,143,0.12) 0%, transparent 70%);
-      pointer-events: none;
-    }
-
-    .status-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 6px 14px;
-      border-radius: 100px;
-      font-family: 'DM Mono', monospace;
-      font-size: 11px;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      margin-bottom: 20px;
-    }
-
-    .status-pill.operational {
-      background: var(--green-dim);
-      border: 1px solid rgba(0,214,143,0.2);
-      color: var(--green);
-    }
-
-    .status-pill.degraded {
-      background: var(--yellow-dim);
-      border: 1px solid rgba(245,200,66,0.2);
-      color: var(--yellow);
-    }
-
-    .status-pill.outage {
-      background: var(--red-dim);
-      border: 1px solid rgba(255,77,106,0.2);
-      color: var(--red);
-    }
-
-    .pulse {
-      width: 7px; height: 7px;
-      border-radius: 50%;
-      background: currentColor;
-      animation: pulse 2s ease-in-out infinite;
-    }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.4; transform: scale(0.8); }
-    }
-
-    .hero-title {
-      font-family: 'Syne', sans-serif;
-      font-weight: 700;
-      font-size: 32px;
-      line-height: 1.1;
-      color: var(--text);
-      margin-bottom: 8px;
-    }
-
-    .hero-sub {
-      font-size: 14px;
-      color: var(--text-muted);
-      font-weight: 300;
-    }
-
-    /* ── UPTIME BAR ── */
-    .uptime-row {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-top: 28px;
-      padding-top: 28px;
-      border-top: 1px solid var(--border);
-    }
-
-    .uptime-label {
-      font-family: 'DM Mono', monospace;
-      font-size: 11px;
-      color: var(--text-dim);
-      letter-spacing: 0.06em;
-      white-space: nowrap;
-    }
-
-    .uptime-bars {
-      display: flex;
-      gap: 2px;
-      flex: 1;
-    }
-
-    .uptime-bar {
-      flex: 1;
-      height: 24px;
-      border-radius: 3px;
-      background: var(--green-dim);
-      border: 1px solid rgba(0,214,143,0.12);
-      position: relative;
-      cursor: default;
-      transition: transform 0.15s;
-    }
-
-    .uptime-bar:hover { transform: scaleY(1.15); }
-    .uptime-bar.incident { background: var(--yellow-dim); border-color: rgba(245,200,66,0.2); }
-    .uptime-bar.outage { background: var(--red-dim); border-color: rgba(255,77,106,0.2); }
-
-    .uptime-pct {
-      font-family: 'DM Mono', monospace;
-      font-size: 12px;
-      color: var(--green);
-      white-space: nowrap;
-    }
-
-    /* ── SECTION TITLE ── */
-    .section-label {
-      font-family: 'DM Mono', monospace;
-      font-size: 10px;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--text-dim);
-      margin-bottom: 12px;
-    }
-
-    /* ── SERVICE CARDS ── */
-    .services { margin-bottom: 40px; }
-
-    .service-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 20px 24px;
-      margin-bottom: 8px;
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      transition: border-color 0.2s, background 0.2s;
-      cursor: default;
-    }
-
-    .service-card:hover {
-      border-color: var(--border2);
-      background: var(--surface2);
-    }
-
-    .service-icon {
-      width: 36px; height: 36px;
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      font-size: 16px;
-    }
-
-    .service-icon.green { background: var(--green-dim); }
-    .service-icon.yellow { background: var(--yellow-dim); }
-    .service-icon.red { background: var(--red-dim); }
-
-    .service-info { flex: 1; min-width: 0; }
-
-    .service-name {
-      font-family: 'Syne', sans-serif;
-      font-weight: 600;
-      font-size: 14px;
-      color: var(--text);
-      margin-bottom: 2px;
-    }
-
-    .service-url {
-      font-family: 'DM Mono', monospace;
-      font-size: 10px;
-      color: var(--text-dim);
-      letter-spacing: 0.03em;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .service-status {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-family: 'DM Mono', monospace;
-      font-size: 11px;
-      letter-spacing: 0.06em;
-      white-space: nowrap;
-    }
-
-    .dot {
-      width: 6px; height: 6px;
-      border-radius: 50%;
-      flex-shrink: 0;
-    }
-
-    .dot.green { background: var(--green); box-shadow: 0 0 6px var(--green); }
-    .dot.yellow { background: var(--yellow); box-shadow: 0 0 6px var(--yellow); }
-    .dot.red { background: var(--red); box-shadow: 0 0 6px var(--red); }
-
-    .status-text.green { color: var(--green); }
-    .status-text.yellow { color: var(--yellow); }
-    .status-text.red { color: var(--red); }
-
-    /* ── INCIDENTS ── */
-    .incidents { margin-bottom: 40px; }
-
-    .no-incidents {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 28px 24px;
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      color: var(--text-muted);
-      font-size: 14px;
-    }
-
-    .no-incidents-icon {
-      width: 36px; height: 36px;
-      background: var(--green-dim);
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 18px;
-      flex-shrink: 0;
-    }
-
-    .incident-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-left: 3px solid var(--yellow);
-      border-radius: 12px;
-      padding: 20px 24px;
-      margin-bottom: 8px;
-    }
-
-    .incident-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 8px;
-    }
-
-    .incident-title {
-      font-family: 'Syne', sans-serif;
-      font-weight: 600;
-      font-size: 14px;
-      color: var(--yellow);
-    }
-
-    .incident-time {
-      font-family: 'DM Mono', monospace;
-      font-size: 10px;
-      color: var(--text-dim);
-    }
-
-    .incident-body {
-      font-size: 13px;
-      color: var(--text-muted);
-      line-height: 1.6;
-    }
-
-    /* ── FOOTER ── */
-    footer {
-      padding: 32px 0 48px;
-      border-top: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: gap;
-      gap: 12px;
-    }
-
-    .footer-left {
-      font-family: 'DM Mono', monospace;
-      font-size: 10px;
-      color: var(--text-dim);
-      letter-spacing: 0.06em;
-    }
-
-    .footer-link {
-      font-family: 'DM Mono', monospace;
-      font-size: 10px;
-      color: var(--text-dim);
-      letter-spacing: 0.06em;
-      text-decoration: none;
-      border-bottom: 1px solid var(--border);
-      padding-bottom: 1px;
-      transition: color 0.2s;
-    }
-
-    .footer-link:hover { color: var(--text-muted); }
-
-    /* ── ADMIN TOGGLE ── */
-    .admin-bar {
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 16px 20px;
-      margin-bottom: 40px;
-      display: none;
-    }
-
-    .admin-bar.visible { display: block; }
-
-    .admin-title {
-      font-family: 'DM Mono', monospace;
-      font-size: 10px;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--text-dim);
-      margin-bottom: 14px;
-    }
-
-    .admin-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
-    }
-
-    .admin-btn {
-      padding: 10px 12px;
-      border-radius: 8px;
-      border: 1px solid var(--border);
-      background: var(--surface);
-      color: var(--text-muted);
-      font-family: 'DM Mono', monospace;
-      font-size: 11px;
-      cursor: pointer;
-      transition: all 0.15s;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .admin-btn:hover { border-color: var(--border2); color: var(--text); background: var(--surface2); }
-    .admin-btn.active-op { border-color: rgba(0,214,143,0.3); color: var(--green); background: var(--green-dim); }
-    .admin-btn.active-deg { border-color: rgba(245,200,66,0.3); color: var(--yellow); background: var(--yellow-dim); }
-    .admin-btn.active-out { border-color: rgba(255,77,106,0.3); color: var(--red); background: var(--red-dim); }
-
-    .admin-toggle {
-      position: fixed;
-      bottom: 24px; right: 24px;
-      width: 40px; height: 40px;
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      color: var(--text-dim);
-      font-size: 16px;
-      transition: all 0.15s;
-      z-index: 100;
-    }
-
-    .admin-toggle:hover { border-color: var(--border2); color: var(--text-muted); }
-
-    /* ── ANIMATIONS ── */
-    .fade-in {
-      opacity: 0;
-      transform: translateY(12px);
-      animation: fadeIn 0.5s ease forwards;
-    }
-
-    @keyframes fadeIn {
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .fade-in:nth-child(1) { animation-delay: 0.05s; }
-    .fade-in:nth-child(2) { animation-delay: 0.1s; }
-    .fade-in:nth-child(3) { animation-delay: 0.15s; }
-    .fade-in:nth-child(4) { animation-delay: 0.2s; }
-
-    @media (max-width: 600px) {
-      .hero { padding: 28px 20px; }
-      .hero-title { font-size: 24px; }
-      .admin-grid { grid-template-columns: 1fr 1fr; }
-      .service-url { display: none; }
-      footer { flex-direction: column; align-items: flex-start; }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:300;min-height:100vh;overflow-x:hidden;}
+    body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(61,155,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(61,155,255,0.03) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0;}
+    .wrap{position:relative;z-index:1;max-width:780px;margin:0 auto;padding:0 24px;}
+
+    header{padding:48px 0 0;display:flex;align-items:center;justify-content:space-between;}
+    .logo{display:flex;align-items:center;gap:10px;}
+    .logo-mark{width:32px;height:32px;background:var(--green);border-radius:6px;display:flex;align-items:center;justify-content:center;}
+    .logo-mark svg{width:18px;height:18px;}
+    .logo-name{font-family:'Syne',sans-serif;font-weight:800;font-size:20px;letter-spacing:.04em;color:var(--text);}
+    .logo-sub{font-family:'DM Mono',monospace;font-size:11px;color:var(--text-muted);letter-spacing:.12em;text-transform:uppercase;}
+    .last-updated{font-family:'DM Mono',monospace;font-size:11px;color:var(--text-dim);letter-spacing:.06em;}
+
+    .hero{margin:56px 0 48px;padding:40px;background:var(--surface);border:1px solid var(--border);border-radius:16px;position:relative;overflow:hidden;}
+    .hero::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--green),transparent);opacity:.6;}
+    .hero-glow{position:absolute;top:-60px;left:50%;transform:translateX(-50%);width:300px;height:120px;background:radial-gradient(ellipse,rgba(0,214,143,.12) 0%,transparent 70%);pointer-events:none;}
+    .status-pill{display:inline-flex;align-items:center;gap:8px;padding:6px 14px;border-radius:100px;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:20px;}
+    .status-pill.operational{background:var(--green-dim);border:1px solid rgba(0,214,143,.2);color:var(--green);}
+    .status-pill.degraded{background:var(--yellow-dim);border:1px solid rgba(245,200,66,.2);color:var(--yellow);}
+    .status-pill.outage{background:var(--red-dim);border:1px solid rgba(255,77,106,.2);color:var(--red);}
+    .pulse{width:7px;height:7px;border-radius:50%;background:currentColor;animation:pulse 2s ease-in-out infinite;}
+    @keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.4;transform:scale(.8);}}
+    .hero-title{font-family:'Syne',sans-serif;font-weight:700;font-size:32px;line-height:1.1;color:var(--text);margin-bottom:8px;}
+    .hero-sub{font-size:14px;color:var(--text-muted);font-weight:300;}
+    .uptime-row{display:flex;align-items:center;gap:12px;margin-top:28px;padding-top:28px;border-top:1px solid var(--border);}
+    .uptime-label{font-family:'DM Mono',monospace;font-size:11px;color:var(--text-dim);letter-spacing:.06em;white-space:nowrap;}
+    .uptime-bars{display:flex;gap:2px;flex:1;}
+    .uptime-bar{flex:1;height:24px;border-radius:3px;background:var(--green-dim);border:1px solid rgba(0,214,143,.12);cursor:default;transition:transform .15s;}
+    .uptime-bar:hover{transform:scaleY(1.15);}
+    .uptime-bar.incident{background:var(--yellow-dim);border-color:rgba(245,200,66,.2);}
+    .uptime-bar.outage{background:var(--red-dim);border-color:rgba(255,77,106,.2);}
+    .uptime-pct{font-family:'DM Mono',monospace;font-size:12px;color:var(--green);white-space:nowrap;}
+
+    .section-label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--text-dim);margin-bottom:12px;}
+    .services{margin-bottom:40px;}
+    .service-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px 24px;margin-bottom:8px;display:flex;align-items:center;gap:16px;transition:border-color .2s,background .2s;cursor:default;}
+    .service-card:hover{border-color:var(--border2);background:var(--surface2);}
+    .service-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px;}
+    .service-icon.green{background:var(--green-dim);}
+    .service-icon.yellow{background:var(--yellow-dim);}
+    .service-icon.red{background:var(--red-dim);}
+    .service-info{flex:1;min-width:0;}
+    .service-name{font-family:'Syne',sans-serif;font-weight:600;font-size:14px;color:var(--text);margin-bottom:2px;}
+    .service-url{font-family:'DM Mono',monospace;font-size:10px;color:var(--text-dim);letter-spacing:.03em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .service-status{display:flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.06em;white-space:nowrap;}
+    .dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+    .dot.green{background:var(--green);box-shadow:0 0 6px var(--green);}
+    .dot.yellow{background:var(--yellow);box-shadow:0 0 6px var(--yellow);}
+    .dot.red{background:var(--red);box-shadow:0 0 6px var(--red);}
+    .status-text.green{color:var(--green);}
+    .status-text.yellow{color:var(--yellow);}
+    .status-text.red{color:var(--red);}
+
+    .incidents{margin-bottom:40px;}
+    .no-incidents{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:28px 24px;display:flex;align-items:center;gap:14px;color:var(--text-muted);font-size:14px;}
+    .no-incidents-icon{width:36px;height:36px;background:var(--green-dim);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+    .incident-card{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--yellow);border-radius:12px;padding:20px 24px;margin-bottom:8px;}
+    .incident-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+    .incident-title{font-family:'Syne',sans-serif;font-weight:600;font-size:14px;color:var(--yellow);}
+    .incident-time{font-family:'DM Mono',monospace;font-size:10px;color:var(--text-dim);}
+    .incident-body{font-size:13px;color:var(--text-muted);line-height:1.6;}
+
+    /* CHANGELOG */
+    .changelog{margin-bottom:40px;}
+    .cl-meta{font-family:'DM Mono',monospace;font-size:10px;color:var(--text-dim);margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+    .cl-meta-dot{width:5px;height:5px;border-radius:50%;background:var(--green);display:inline-block;}
+
+    .commit-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px 20px;margin-bottom:8px;display:flex;gap:12px;align-items:flex-start;transition:border-color .2s;}
+    .commit-card:hover{border-color:var(--border2);}
+    .branch-tag{font-family:'DM Mono',monospace;font-size:9px;padding:3px 8px;border-radius:4px;white-space:nowrap;flex-shrink:0;margin-top:2px;letter-spacing:.04em;border:1px solid;}
+    .branch-tag.colfondos{background:rgba(61,155,255,.08);border-color:rgba(61,155,255,.2);color:var(--blue);}
+    .branch-tag.obligatorio{background:var(--green-dim);border-color:rgba(0,214,143,.2);color:var(--green);}
+    .branch-tag.skandia{background:var(--yellow-dim);border-color:rgba(245,200,66,.2);color:var(--yellow);}
+    .commit-body{flex:1;min-width:0;}
+    .commit-msg{font-size:13px;color:var(--text);line-height:1.45;margin-bottom:6px;word-break:break-word;}
+    .commit-meta{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+    .commit-sha{font-family:'DM Mono',monospace;font-size:10px;color:var(--blue);background:var(--blue-dim);border:1px solid rgba(61,155,255,.15);padding:1px 7px;border-radius:4px;text-decoration:none;transition:background .15s;}
+    .commit-sha:hover{background:rgba(61,155,255,.12);}
+    .commit-author,.commit-date{font-family:'DM Mono',monospace;font-size:10px;color:var(--text-dim);}
+    .cl-empty{padding:20px 24px;background:var(--surface);border:1px solid var(--border);border-radius:12px;font-family:'DM Mono',monospace;font-size:11px;color:var(--text-dim);}
+
+    .admin-bar{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:16px 20px;margin-bottom:40px;display:none;}
+    .admin-bar.visible{display:block;}
+    .admin-title{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-dim);margin-bottom:14px;}
+    .admin-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+    .admin-btn{padding:10px 12px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text-muted);font-family:'DM Mono',monospace;font-size:11px;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:6px;}
+    .admin-btn:hover{border-color:var(--border2);color:var(--text);background:var(--surface2);}
+    .admin-btn.active-op{border-color:rgba(0,214,143,.3);color:var(--green);background:var(--green-dim);}
+    .admin-btn.active-deg{border-color:rgba(245,200,66,.3);color:var(--yellow);background:var(--yellow-dim);}
+    .admin-btn.active-out{border-color:rgba(255,77,106,.3);color:var(--red);background:var(--red-dim);}
+    .admin-toggle{position:fixed;bottom:24px;right:24px;width:40px;height:40px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-dim);font-size:16px;transition:all .15s;z-index:100;}
+    .admin-toggle:hover{border-color:var(--border2);color:var(--text-muted);}
+
+    footer{padding:32px 0 48px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
+    .footer-left{font-family:'DM Mono',monospace;font-size:10px;color:var(--text-dim);letter-spacing:.06em;}
+    .footer-link{font-family:'DM Mono',monospace;font-size:10px;color:var(--text-dim);letter-spacing:.06em;text-decoration:none;border-bottom:1px solid var(--border);padding-bottom:1px;transition:color .2s;}
+    .footer-link:hover{color:var(--text-muted);}
+
+    .fade-in{opacity:0;transform:translateY(12px);animation:fadeIn .5s ease forwards;}
+    @keyframes fadeIn{to{opacity:1;transform:translateY(0);}}
+    .fade-in:nth-child(1){animation-delay:.05s;}
+    .fade-in:nth-child(2){animation-delay:.1s;}
+    .fade-in:nth-child(3){animation-delay:.15s;}
+    .fade-in:nth-child(4){animation-delay:.2s;}
+
+    @media(max-width:600px){
+      .hero{padding:28px 20px;}.hero-title{font-size:24px;}
+      .admin-grid{grid-template-columns:1fr 1fr;}
+      .service-url{display:none;}
+      footer{flex-direction:column;align-items:flex-start;}
     }
   </style>
 </head>
 <body>
-
 <div class="wrap">
 
-  <!-- HEADER -->
   <header>
     <div class="logo">
       <div class="logo-mark">
-        <svg viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M3 9L7.5 13.5L15 4.5" stroke="#0a0d12" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
+        <svg viewBox="0 0 18 18" fill="none"><path d="M3 9L7.5 13.5L15 4.5" stroke="#0a0d12" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </div>
       <div>
         <div class="logo-name">PUY</div>
@@ -533,16 +146,11 @@
     <div class="last-updated" id="lastUpdated">—</div>
   </header>
 
-  <!-- HERO -->
   <div class="hero fade-in" id="heroCard">
     <div class="hero-glow"></div>
-    <div class="status-pill operational" id="heroPill">
-      <div class="pulse"></div>
-      All systems operational
-    </div>
+    <div class="status-pill operational" id="heroPill"><div class="pulse"></div>All systems operational</div>
     <div class="hero-title" id="heroTitle">Everything is running smoothly.</div>
     <div class="hero-sub" id="heroSub">All PUY services are operating normally. No incidents reported.</div>
-
     <div class="uptime-row">
       <span class="uptime-label">90d uptime</span>
       <div class="uptime-bars" id="uptimeBars"></div>
@@ -550,25 +158,27 @@
     </div>
   </div>
 
-  <!-- ADMIN BAR -->
   <div class="admin-bar" id="adminBar">
     <div class="admin-title">// Admin — Update Status</div>
     <div class="admin-grid" id="adminGrid"></div>
   </div>
 
-  <!-- SERVICES -->
   <div class="services">
     <div class="section-label">Services</div>
     <div id="serviceList"></div>
   </div>
 
-  <!-- INCIDENTS -->
   <div class="incidents">
     <div class="section-label">Incident History</div>
     <div id="incidentList"></div>
   </div>
 
-  <!-- FOOTER -->
+  <div class="changelog">
+    <div class="section-label">Changelog &amp; Release Notes</div>
+    <div class="cl-meta" id="clMeta"></div>
+    <div id="changelogList"></div>
+  </div>
+
   <footer>
     <div class="footer-left">© 2026 PUY Group · status.puygroup.com</div>
     <div style="display:flex;gap:20px;">
@@ -576,194 +186,147 @@
       <a href="mailto:support@puygroup.com" class="footer-link">support@puygroup.com</a>
     </div>
   </footer>
-
 </div>
 
-<!-- Admin toggle (hidden in corner) -->
 <button class="admin-toggle" id="adminToggle" title="Admin">⚙</button>
 
 <script>
-  // ── STATE ──────────────────────────────────────────────
-  const SERVICES = [
-    { id: 'obligatorio', name: 'Obligatorio', url: 'obligatorio.puygroup.com', icon: '⚡', status: 'operational' },
-    { id: 'skandia',     name: 'Skandia',     url: 'skandia.puygroup.com',     icon: '🏦', status: 'operational' },
-    { id: 'website',     name: 'PUY Website', url: 'www.puygroup.com',         icon: '🌐', status: 'operational' },
-  ];
+  // Commits injected at build time by GitHub Actions — do not edit this line manually
+  /* __COMMITS_PLACEHOLDER__ */
 
-  const STATUS_CONFIG = {
-    operational: { label: 'Operational', color: 'green', heroTitle: 'Everything is running smoothly.', heroSub: 'All PUY services are operating normally. No incidents reported.', pillText: 'All systems operational' },
-    degraded:    { label: 'Degraded Performance', color: 'yellow', heroTitle: 'Some services are degraded.', heroSub: 'We are aware of performance issues and are actively investigating.', pillText: 'Degraded performance' },
-    outage:      { label: 'Service Outage', color: 'red', heroTitle: 'We are experiencing an outage.', heroSub: 'Our team has been paged and is working to restore service.', pillText: 'Service outage' },
+  // ── SERVICES ──────────────────────────────────────────
+  const SERVICES = [
+    { id:'obligatorio',  name:'Obligatorio',  url:'obligatorio.puygroup.com',   icon:'⚡', status:'operational' },
+    { id:'conciliatorio',name:'Conciliatorio', url:'conciliatorio.puygroup.com', icon:'🔄', status:'operational' },
+    { id:'skandia',      name:'Skandia',       url:'skandia.puygroup.com',       icon:'🏦', status:'operational' },
+    { id:'website',      name:'PUY Website',   url:'www.puygroup.com',           icon:'🌐', status:'operational' },
+  ];
+  const SC = {
+    operational:{ label:'Operational',         color:'green',  heroTitle:'Everything is running smoothly.',  heroSub:'All PUY services are operating normally. No incidents reported.',     pillText:'All systems operational' },
+    degraded:   { label:'Degraded Performance', color:'yellow', heroTitle:'Some services are degraded.',      heroSub:'We are aware of performance issues and are actively investigating.',  pillText:'Degraded performance'    },
+    outage:     { label:'Service Outage',       color:'red',    heroTitle:'We are experiencing an outage.',   heroSub:'Our team has been paged and is working to restore service.',          pillText:'Service outage'          },
   };
 
-  // Load saved state from localStorage
-  function loadState() {
-    try {
-      const saved = JSON.parse(localStorage.getItem('puy-status') || '{}');
-      if (saved.services) {
-        saved.services.forEach(s => {
-          const svc = SERVICES.find(x => x.id === s.id);
-          if (svc) svc.status = s.status;
-        });
-      }
-      return saved;
-    } catch(e) { return {}; }
+  function loadState(){
+    try{
+      const s=JSON.parse(localStorage.getItem('puy-status')||'{}');
+      if(s.services) s.services.forEach(sv=>{const svc=SERVICES.find(x=>x.id===sv.id);if(svc)svc.status=sv.status;});
+    }catch(e){}
   }
+  function saveState(){ localStorage.setItem('puy-status',JSON.stringify({services:SERVICES.map(s=>({id:s.id,status:s.status})),updatedAt:new Date().toISOString()})); }
+  function overall(){ return SERVICES.some(s=>s.status==='outage')?'outage':SERVICES.some(s=>s.status==='degraded')?'degraded':'operational'; }
 
-  function saveState() {
-    localStorage.setItem('puy-status', JSON.stringify({
-      services: SERVICES.map(s => ({ id: s.id, status: s.status })),
-      updatedAt: new Date().toISOString()
-    }));
+  function renderHero(){
+    const o=overall(),c=SC[o];
+    const pill=document.getElementById('heroPill');
+    pill.className=`status-pill ${o}`;
+    pill.innerHTML=`<div class="pulse"></div>${c.pillText}`;
+    document.getElementById('heroTitle').textContent=c.heroTitle;
+    document.getElementById('heroSub').textContent=c.heroSub;
   }
-
-  // ── RENDER ─────────────────────────────────────────────
-  function getOverallStatus() {
-    if (SERVICES.some(s => s.status === 'outage'))    return 'outage';
-    if (SERVICES.some(s => s.status === 'degraded'))  return 'degraded';
-    return 'operational';
-  }
-
-  function renderHero() {
-    const overall = getOverallStatus();
-    const cfg = STATUS_CONFIG[overall];
-    const pill = document.getElementById('heroPill');
-    pill.className = `status-pill ${overall}`;
-    pill.innerHTML = `<div class="pulse"></div>${cfg.pillText}`;
-    document.getElementById('heroTitle').textContent = cfg.heroTitle;
-    document.getElementById('heroSub').textContent = cfg.heroSub;
-    // Hero top border color
-    const card = document.getElementById('heroCard');
-    card.style.setProperty('--hero-color', overall === 'operational' ? 'var(--green)' : overall === 'degraded' ? 'var(--yellow)' : 'var(--red)');
-  }
-
-  function renderUptimeBars() {
-    const container = document.getElementById('uptimeBars');
-    container.innerHTML = '';
-    const overall = getOverallStatus();
-    // 90 fake bars — all green unless degraded/outage today
-    for (let i = 0; i < 90; i++) {
-      const bar = document.createElement('div');
-      bar.className = 'uptime-bar';
-      if (i === 89 && overall === 'degraded') bar.className += ' incident';
-      if (i === 89 && overall === 'outage')   bar.className += ' outage';
-      container.appendChild(bar);
+  function renderBars(){
+    const el=document.getElementById('uptimeBars');el.innerHTML='';
+    const o=overall();
+    for(let i=0;i<90;i++){
+      const bar=document.createElement('div');
+      bar.className='uptime-bar'+(i===89&&o==='degraded'?' incident':i===89&&o==='outage'?' outage':'');
+      el.appendChild(bar);
     }
-    const pct = overall === 'operational' ? '100%' : overall === 'degraded' ? '99.9%' : '99.7%';
-    document.getElementById('uptimePct').textContent = pct;
-    document.getElementById('uptimePct').style.color = overall === 'operational' ? 'var(--green)' : overall === 'degraded' ? 'var(--yellow)' : 'var(--red)';
+    const pEl=document.getElementById('uptimePct');
+    pEl.textContent=o==='operational'?'100%':o==='degraded'?'99.9%':'99.7%';
+    pEl.style.color=o==='operational'?'var(--green)':o==='degraded'?'var(--yellow)':'var(--red)';
+  }
+  function renderServices(){
+    const list=document.getElementById('serviceList');list.innerHTML='';
+    SERVICES.forEach((svc,i)=>{
+      const c=SC[svc.status];
+      const card=document.createElement('div');
+      card.className='service-card fade-in';
+      card.style.animationDelay=`${.1+i*.05}s`;
+      card.innerHTML=`<div class="service-icon ${c.color}">${svc.icon}</div><div class="service-info"><div class="service-name">${svc.name}</div><div class="service-url">${svc.url}</div></div><div class="service-status"><div class="dot ${c.color}"></div><span class="status-text ${c.color}">${c.label}</span></div>`;
+      list.appendChild(card);
+    });
+  }
+  function renderIncidents(){
+    const list=document.getElementById('incidentList'),o=overall();list.innerHTML='';
+    if(o==='operational'){
+      list.innerHTML=`<div class="no-incidents fade-in"><div class="no-incidents-icon">✓</div><div><div style="font-family:'Syne',sans-serif;font-weight:600;font-size:14px;color:var(--green);margin-bottom:2px;">No incidents reported</div><div style="font-size:13px;">All services have been operating normally for the past 90 days.</div></div></div>`;
+    } else {
+      const ts=new Date().toLocaleString('en-US',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit',timeZoneName:'short'});
+      const aff=SERVICES.filter(s=>s.status!=='operational').map(s=>s.name).join(', ');
+      list.innerHTML=`<div class="incident-card fade-in"><div class="incident-header"><div class="incident-title">${o==='outage'?'🔴 Active Outage':'🟡 Degraded Performance'} — ${aff}</div><div class="incident-time">${ts}</div></div><div class="incident-body">We are currently investigating an issue affecting ${aff}. Our engineering team has been notified and is working on a resolution.</div></div>`;
+    }
   }
 
-  function renderServices() {
-    const list = document.getElementById('serviceList');
-    list.innerHTML = '';
-    SERVICES.forEach((svc, i) => {
-      const cfg = STATUS_CONFIG[svc.status];
-      const card = document.createElement('div');
-      card.className = 'service-card fade-in';
-      card.style.animationDelay = `${0.1 + i * 0.05}s`;
-      card.innerHTML = `
-        <div class="service-icon ${cfg.color}">${svc.icon}</div>
-        <div class="service-info">
-          <div class="service-name">${svc.name}</div>
-          <div class="service-url">${svc.url}</div>
-        </div>
-        <div class="service-status">
-          <div class="dot ${cfg.color}"></div>
-          <span class="status-text ${cfg.color}">${cfg.label}</span>
-        </div>
-      `;
+  // ── CHANGELOG ─────────────────────────────────────────
+  function renderChangelog(){
+    const list=document.getElementById('changelogList');
+    const meta=document.getElementById('clMeta');
+
+    const commits = typeof window.COMMITS !== 'undefined' ? window.COMMITS : [];
+
+    if(!commits.length){
+      meta.innerHTML='';
+      list.innerHTML='<div class="cl-empty">No changelog data available — workflow may not have run yet.</div>';
+      return;
+    }
+
+    // Build time is the date of the most recent commit
+    const latest = new Date(commits[0].date);
+    const builtStr = latest.toLocaleString('en-US',{month:'short',day:'numeric',year:'numeric',hour:'2-digit',minute:'2-digit',timeZone:'America/Bogota',timeZoneName:'short'});
+    meta.innerHTML = `<span class="cl-meta-dot"></span>Last updated ${builtStr} · ${commits.length} commits across 3 deployment branches`;
+
+    list.innerHTML='';
+    commits.forEach((c,i)=>{
+      const d=new Date(c.date);
+      const dateStr=d.toLocaleString('en-US',{month:'short',day:'numeric',year:'numeric',hour:'2-digit',minute:'2-digit',timeZone:'America/Bogota',timeZoneName:'short'});
+      const card=document.createElement('div');
+      card.className='commit-card fade-in';
+      card.style.animationDelay=`${i*.04}s`;
+      card.innerHTML=`
+        <span class="branch-tag ${esc(c.branch)}">${esc(c.label)}</span>
+        <div class="commit-body">
+          <div class="commit-msg">${esc(c.message)}</div>
+          <div class="commit-meta">
+            <a class="commit-sha" href="${esc(c.url)}" target="_blank" rel="noopener">${esc(c.sha)}</a>
+            <span class="commit-author">by ${esc(c.author)}</span>
+            <span class="commit-date">${dateStr}</span>
+          </div>
+        </div>`;
       list.appendChild(card);
     });
   }
 
-  function renderIncidents() {
-    const list = document.getElementById('incidentList');
-    const overall = getOverallStatus();
-    list.innerHTML = '';
-    if (overall === 'operational') {
-      list.innerHTML = `
-        <div class="no-incidents fade-in">
-          <div class="no-incidents-icon">✓</div>
-          <div>
-            <div style="font-family:'Syne',sans-serif;font-weight:600;font-size:14px;color:var(--green);margin-bottom:2px;">No incidents reported</div>
-            <div style="font-size:13px;">All services have been operating normally for the past 90 days.</div>
-          </div>
-        </div>
-      `;
-    } else {
-      const now = new Date();
-      const timeStr = now.toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', timeZoneName: 'short' });
-      const affected = SERVICES.filter(s => s.status !== 'operational').map(s => s.name).join(', ');
-      list.innerHTML = `
-        <div class="incident-card fade-in">
-          <div class="incident-header">
-            <div class="incident-title">${overall === 'outage' ? '🔴 Active Outage' : '🟡 Degraded Performance'} — ${affected}</div>
-            <div class="incident-time">${timeStr}</div>
-          </div>
-          <div class="incident-body">We are currently investigating an issue affecting ${affected}. Our engineering team has been notified and is actively working on a resolution. Updates will be posted here as they become available.</div>
-        </div>
-      `;
-    }
-  }
+  const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 
-  function renderLastUpdated() {
-    const now = new Date();
-    document.getElementById('lastUpdated').textContent =
-      'Updated ' + now.toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', timeZoneName: 'short' });
+  function renderLastUpdated(){
+    document.getElementById('lastUpdated').textContent='Updated '+new Date().toLocaleString('en-US',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit',timeZoneName:'short'});
   }
-
-  function renderAdmin() {
-    const grid = document.getElementById('adminGrid');
-    grid.innerHTML = '';
-    SERVICES.forEach(svc => {
-      ['operational','degraded','outage'].forEach(st => {
-        const btn = document.createElement('button');
-        const cfg = STATUS_CONFIG[st];
-        const isActive = svc.status === st;
-        btn.className = `admin-btn${isActive ? ` active-${st === 'operational' ? 'op' : st === 'degraded' ? 'deg' : 'out'}` : ''}`;
-        btn.textContent = `${svc.name}: ${cfg.label}`;
-        btn.onclick = () => {
-          svc.status = st;
-          saveState();
-          renderAll();
-        };
+  function renderAdmin(){
+    const grid=document.getElementById('adminGrid');grid.innerHTML='';
+    SERVICES.forEach(svc=>{
+      ['operational','degraded','outage'].forEach(st=>{
+        const btn=document.createElement('button');
+        const isA=svc.status===st;
+        btn.className=`admin-btn${isA?` active-${st==='operational'?'op':st==='degraded'?'deg':'out'}`:''}`;
+        btn.textContent=`${svc.name}: ${SC[st].label}`;
+        btn.onclick=()=>{svc.status=st;saveState();renderAll();};
         grid.appendChild(btn);
       });
     });
   }
+  function renderAll(){ renderHero();renderBars();renderServices();renderIncidents();renderChangelog();renderLastUpdated();renderAdmin(); }
 
-  function renderAll() {
-    renderHero();
-    renderUptimeBars();
-    renderServices();
-    renderIncidents();
-    renderLastUpdated();
-    renderAdmin();
-  }
-
-  // ── ADMIN TOGGLE ───────────────────────────────────────
-  let adminVisible = false;
-  let adminClickCount = 0;
-  let adminClickTimer = null;
-
-  document.getElementById('adminToggle').addEventListener('click', () => {
-    adminClickCount++;
-    clearTimeout(adminClickTimer);
-    adminClickTimer = setTimeout(() => { adminClickCount = 0; }, 800);
-    if (adminClickCount >= 3) {
-      adminVisible = !adminVisible;
-      document.getElementById('adminBar').classList.toggle('visible', adminVisible);
-      adminClickCount = 0;
-    }
+  let adminVisible=false,clicks=0,clickTimer=null;
+  document.getElementById('adminToggle').addEventListener('click',()=>{
+    clicks++;clearTimeout(clickTimer);
+    clickTimer=setTimeout(()=>{clicks=0;},800);
+    if(clicks>=3){adminVisible=!adminVisible;document.getElementById('adminBar').classList.toggle('visible',adminVisible);clicks=0;}
   });
 
-  // ── INIT ───────────────────────────────────────────────
   loadState();
   renderAll();
-
-  // Auto-refresh every 60 seconds
-  setInterval(() => { renderLastUpdated(); }, 60000);
+  setInterval(renderLastUpdated,60000);
 </script>
 </body>
 </html>
